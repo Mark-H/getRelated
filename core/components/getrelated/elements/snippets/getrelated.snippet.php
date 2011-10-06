@@ -28,10 +28,6 @@
 $p = include 'getrelated.properties.php';
 $p = array_merge($p,$scriptProperties);
 
-$p['fields'] = explode(',',$p['fields']);
-$p['returnFields'] = explode(',',$p['returnFields']);
-$p['parents'] = !empty($p['parents']) ? explode(',',$p['parents']) : array();
-$p['contexts'] = !empty($p['contexts']) ? explode(',',$p['contexts']) : array();
 
 $getRelated = $modx->getService('getrelated','getRelated',$modx->getOption('getrelated.core_path',null,$modx->getOption('core_path').'components/getrelated/').'model/',$p);
 if (!($getRelated instanceof getRelated)) return 'Error loading class.';
@@ -65,7 +61,8 @@ $phs = array(
 );
 $output = $getRelated->getChunk($p['tplOuter'],$phs);
 
-
+var_dump($getRelated->weight);
+var_dump($getRelated->fields);
 return $output;
 
 

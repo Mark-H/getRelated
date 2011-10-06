@@ -29,6 +29,7 @@ class getRelated {
     /* @var modResource $resource */
     public $resource = null;
     public $fields = array();
+    public $weight = array();
     public $tvs = array();
     public $matchData = array();
     public $related = array();
@@ -43,6 +44,17 @@ class getRelated {
             'model_path' => $basePath.'model/',
             'elements_path' => $basePath.'elements/',
         ),$config);
+
+        $this->config['returnFields'] = explode(',',$this->config['returnFields']);
+        $this->config['parents'] = !empty($this->config['parents']) ? explode(',',$this->config['parents']) : array();
+        $this->config['contexts'] = !empty($this->config['contexts']) ? explode(',',$this->config['contexts']) : array();
+
+        $fields = explode(',',$this->config['fields']);
+        foreach ($fields as $fld) {
+            $tmp = explode(':',$fld);
+            $this->fields[] = $tmp[0];
+            $this->weight[$tmp[0]] = (is_numeric($tmp[1])) ? (int)$tmp[1] : $this->config['defaultWeight'];
+        }
     }
 
     /**
@@ -129,9 +141,6 @@ class getRelated {
             }
         }
         if (!($this->resource instanceof modResource)) return false;
-        
-        if (!is_array($fields)) return false;
-        $this->fields = $fields;
 
         /* Split up TVs to its own array */
         foreach ($this->fields as $key => $fld) {
@@ -178,6 +187,7 @@ class getRelated {
         $this->related = $this->_getFieldRelated();
         $this->related = array_merge($this->related,$this->_getTVRelated());
 
+        $this->related = $this->_calculateRelatedRank();
         return $this->related;
     }
 
@@ -210,6 +220,40 @@ class getRelated {
     }
     private function _getTVRelated() {
         return array();
+    }
+
+    private function _calculateRelatedRank() {
+        $tmpArray = array();
+
+        /* loop through related resources */
+        foreach ($this->related as $index => $array) {
+            $rank = 0;
+            /* Loop through fields and each fields' value */
+            foreach ($this->fields as $fld) {
+                foreach ($this->matchData as $match) {
+                    /* Calculate a rank and add it to the total resource rank */
+                    $count = substr_count(strtolower($array[$fld]),$match);
+                    $rank += $count * $this->weight[$fld];
+                }
+            }
+            $tmpArray[] = array_merge(array(
+                'rank' => $rank,
+            ),$array);
+        }
+
+        /* Sort on rank (hi>lo) and if equal on ID (hi>lo) */
+        uasort(
+            $tmpArray,
+            function ($a, $b) {
+                if ($a['rank'] == $b['rank'])
+                    return $a['id'] < $b['id'] ? 1 : -1;
+                return $a['rank'] < $b['rank'] ? 1 : -1;
+            }
+        );
+
+        return $tmpArray;
+
+
     }
 }
 

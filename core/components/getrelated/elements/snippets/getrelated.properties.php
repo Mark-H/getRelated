@@ -23,7 +23,7 @@
 
 return array(
     'resource' => 'current',
-    'fields' => 'pagetitle,tv.MyTags,introtext',
+    'fields' => 'pagetitle:5,tv.MyTags:10,introtext:2',
     'returnFields' => 'pagetitle,longtitle,introtext',
     'parents' => '',
     'contexts' => 'web',
@@ -37,5 +37,6 @@ return array(
     'toPlaceholder' => '',
     'rowSeparator' => "\n",
 
+    'defaultWeight' => 5,
 );
 ?>
