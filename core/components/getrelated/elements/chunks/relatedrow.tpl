@@ -1,0 +1,1 @@
+<li class="related[[+idx]]">[[+longtitle:default=`[[+pagetitle]]`]] ([[+rank]])</li>

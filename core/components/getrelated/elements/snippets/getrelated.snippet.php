@@ -28,13 +28,14 @@
 $p = include 'getrelated.properties.php';
 $p = array_merge($p,$scriptProperties);
 
+$p['fields'] = explode(',',$p['fields']);
+$p['returnFields'] = explode(',',$p['returnFields']);
+$p['parents'] = !empty($p['parents']) ? explode(',',$p['parents']) : array();
+$p['contexts'] = !empty($p['contexts']) ? explode(',',$p['contexts']) : array();
+
 $getRelated = $modx->getService('getrelated','getRelated',$modx->getOption('getrelated.core_path',null,$modx->getOption('core_path').'components/getrelated/').'model/',$p);
 if (!($getRelated instanceof getRelated)) return 'Error loading class.';
 $modx->lexicon->load('getrelated:default');
-
-$p['fields'] = explode(',',$p['fields']);
-$p['parents'] = !empty($p['parents']) ? explode(',',$p['parents']) : array();
-$p['contexts'] = !empty($p['contexts']) ? explode(',',$p['contexts']) : array();
 
 $p['resource'] = (($p['resource'] == 'current') || empty($p['resource'])) ? $modx->resource->id : (int)$p['resource'];
 if (empty($p['resource'])) return 'Invalid resource identifier.';
@@ -43,10 +44,30 @@ if (empty($p['resource'])) return 'Invalid resource identifier.';
 $matchData = $getRelated->getMatchData($p['resource'],$p['fields']);
 if (count($matchData) < 1) return 'Not enough data to find related resources :(';
 
+/* Get the possibly related resources based on the $matchData found. */
+$related = $getRelated->getRelated();
+
+$output = array();
+$i = 0;
+foreach ($related as $rank => $resArray) {
+    $phs = array_merge(array(
+        'idx' => $i,
+        'rank' => $rank,
+    ),$resArray);
+    $output[] = $getRelated->getChunk($p['tplRow'],$phs);
+    $i++;
+    if ($i == $p['limit']) break;
+}
+
+$phs = array(
+    'count' => count($output),
+    'wrapper' => implode($p['rowSeparator'],$output),
+);
+$output = $getRelated->getChunk($p['tplOuter'],$phs);
 
 
-var_dump($matchData);
+return $output;
 
 
-return '-- end of processing --';
+
 ?>

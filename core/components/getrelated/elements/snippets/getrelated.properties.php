@@ -24,16 +24,18 @@
 return array(
     'resource' => 'current',
     'fields' => 'pagetitle,tv.MyTags,introtext',
+    'returnFields' => 'pagetitle,longtitle,introtext',
     'parents' => '',
     'contexts' => 'web',
 
     'start' => 0,
-    'limit' => 5,
+    'limit' => 3,
 
     'tplOuter' => 'relatedOuter',
     'tplRow' => 'relatedRow',
 
     'toPlaceholder' => '',
+    'rowSeparator' => "\n",
 
 );
 ?>

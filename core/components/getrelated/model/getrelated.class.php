@@ -28,6 +28,10 @@ class getRelated {
 
     /* @var modResource $resource */
     public $resource = null;
+    public $fields = array();
+    public $tvs = array();
+    public $matchData = array();
+    public $related = array();
 
     function __construct(modX &$modx,array $config = array()) {
         $this->modx =& $modx;
@@ -127,19 +131,19 @@ class getRelated {
         if (!($this->resource instanceof modResource)) return false;
         
         if (!is_array($fields)) return false;
+        $this->fields = $fields;
 
         /* Split up TVs to its own array */
-        $tvs = array();
-        foreach ($fields as $key => $fld) {
+        foreach ($this->fields as $key => $fld) {
             if (substr($fld,0,3) == 'tv.') {
-                $tvs[] = substr($fld,3);
-                unset($fields[$key]);
+                $this->tvs[] = substr($fld,3);
+                unset($this->fields[$key]);
             }
         }
 
         /* Fetch TV data */
         $values = array();
-        foreach ($tvs as $tvname) {
+        foreach ($this->tvs as $tvname) {
             $tvvalue = $this->resource->getTVValue($tvname);
             $values1 = explode('||',$tvvalue);
             foreach ($values1 as $key => $value) {
@@ -150,7 +154,7 @@ class getRelated {
         }
 
         /* Fetch resource data */
-        $resValues = $this->resource->get($fields);
+        $resValues = $this->resource->get($this->fields);
         $resValues = implode(' ',$resValues);
         $resValues = explode(' ',trim($resValues));
 
@@ -163,9 +167,50 @@ class getRelated {
                 $filteredValues[] = strtolower($v);
         }
 
-        return $filteredValues;
+        $this->matchData = $filteredValues;
+        return $this->matchData;
     }
-    
+
+    public function getRelated() {
+        if (empty($this->fields) && empty($this->tvs)) return 'No fields to search in.';
+        if (empty($this->matchData)) return 'No data to match with';
+
+        $this->related = $this->_getFieldRelated();
+        $this->related = array_merge($this->related,$this->_getTVRelated());
+
+        return $this->related;
+    }
+
+    private function _getFieldRelated() {
+        $c = $this->modx->newQuery('modResource');
+        $selectFields = array('id');
+        foreach (array_merge($this->config['returnFields'],$this->fields) as $fld) {
+            if (!in_array($fld,$selectFields))
+                $selectFields[] = $fld;
+        }
+
+        $c->select($selectFields);
+        $fldMtch = array();
+        foreach ($this->fields as $fld) {
+            foreach ($this->matchData as $data)
+                $fldMtch[] = array($fld.':LIKE' => "%$data%");
+        }
+        $c->where($fldMtch,xPDOQuery::SQL_OR);
+        $c->andCondition(array('id:!=' => $this->resource->id ));
+        $c->prepare();
+
+        $col = $this->modx->getCollection('modResource',$c);
+        foreach ($col as $item) {
+            $array = $item->get($selectFields);
+            if (!$this->related[$array['id']])
+                $this->related[$array['id']] = $array;
+        }
+
+        return $this->related;
+    }
+    private function _getTVRelated() {
+        return array();
+    }
 }
 
 ?>
