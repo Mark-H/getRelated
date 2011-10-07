@@ -41,5 +41,6 @@ return array(
     'rowSeparator' => "\n",
 
     'defaultWeight' => 5,
+    'debug' => false
 );
 ?>
