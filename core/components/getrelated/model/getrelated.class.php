@@ -222,7 +222,6 @@ class getRelated {
         $c->innerJoin('modResource','Resource');
         $c->andCondition(array('contentid:!=' => $this->resource->id ));
 
-
         $selectFields = array('`Resource`.`id`','value','name');
         foreach ($this->config['returnFields'] as $fld) {
             if (!in_array($fld,$selectFields))
@@ -239,7 +238,7 @@ class getRelated {
         /* Set up the sources */
         $tvSelect = array();
         foreach ($useTVs as $tv) {
-            $tvSelect[] = array('TemplateVar.name' => $tv);
+            $tvSelect[] = array('`TemplateVar`.`name`' => $tv);
         }
 
         $c->where($tvSelect,xPDOQuery::SQL_OR);
