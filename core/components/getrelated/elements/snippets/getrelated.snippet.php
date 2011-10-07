@@ -60,9 +60,7 @@ $phs = array(
     'wrapper' => implode($p['rowSeparator'],$output),
 );
 $output = $getRelated->getChunk($p['tplOuter'],$phs);
-
-var_dump($getRelated->weight);
-var_dump($getRelated->fields);
+var_dump($getRelated->related);
 return $output;
 
 

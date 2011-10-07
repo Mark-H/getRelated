@@ -23,10 +23,13 @@
 
 return array(
     'resource' => 'current',
-    'fields' => 'pagetitle:5,tv.MyTags:10,introtext:2',
+    'fields' => 'pagetitle:3,tv.MyTags:7,tv.MySubjects:15,introtext:2',
     'returnFields' => 'pagetitle,longtitle,introtext',
+
     'parents' => '',
     'contexts' => 'web',
+    'includeUnpublished' => false,
+    'includeHidden' => true,
 
     'start' => 0,
     'limit' => 3,

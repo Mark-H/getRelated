@@ -52,7 +52,12 @@ class getRelated {
         $fields = explode(',',$this->config['fields']);
         foreach ($fields as $fld) {
             $tmp = explode(':',$fld);
-            $this->fields[] = $tmp[0];
+            if (substr($tmp[0],0,3) == 'tv.') {
+                $this->tvs[] = substr($tmp[0],3);
+                $tmp[0] = substr($tmp[0],3);
+            } else {
+                $this->fields[] = $tmp[0];
+            }
             $this->weight[$tmp[0]] = (is_numeric($tmp[1])) ? (int)$tmp[1] : $this->config['defaultWeight'];
         }
     }
@@ -142,14 +147,6 @@ class getRelated {
         }
         if (!($this->resource instanceof modResource)) return false;
 
-        /* Split up TVs to its own array */
-        foreach ($this->fields as $key => $fld) {
-            if (substr($fld,0,3) == 'tv.') {
-                $this->tvs[] = substr($fld,3);
-                unset($this->fields[$key]);
-            }
-        }
-
         /* Fetch TV data */
         $values = array();
         foreach ($this->tvs as $tvname) {
@@ -184,10 +181,10 @@ class getRelated {
         if (empty($this->fields) && empty($this->tvs)) return 'No fields to search in.';
         if (empty($this->matchData)) return 'No data to match with';
 
-        $this->related = $this->_getFieldRelated();
-        $this->related = array_merge($this->related,$this->_getTVRelated());
+        $this->_getFieldRelated();
+        $this->_getTVRelated();
+        $this->_calculateRelatedRank();
 
-        $this->related = $this->_calculateRelatedRank();
         return $this->related;
     }
 
@@ -219,7 +216,70 @@ class getRelated {
         return $this->related;
     }
     private function _getTVRelated() {
-        return array();
+        /* get TV values */
+        $c = $this->modx->newQuery('modTemplateVarResource');
+        $c->innerJoin('modTemplateVar','TemplateVar');
+        $c->innerJoin('modResource','Resource');
+        $c->andCondition(array('contentid:!=' => $this->resource->id ));
+
+
+        $selectFields = array('`Resource`.`id`','value','name');
+        foreach ($this->config['returnFields'] as $fld) {
+            if (!in_array($fld,$selectFields))
+                $selectFields[] = $fld;
+        }
+        $c->select($selectFields);
+
+        $useTVs = array();
+        /* Make sure we don't have duplicates */
+        foreach ($this->tvs as $tv) {
+            if (!in_array($tv,$useTVs))
+                $useTVs[] = $tv;
+        }
+        /* Set up the sources */
+        $tvSelect = array();
+        foreach ($useTVs as $tv) {
+            $tvSelect[] = array('TemplateVar.name' => $tv);
+        }
+
+        $c->where($tvSelect,xPDOQuery::SQL_OR);
+
+        $fldMtch = array();
+        foreach ($this->fields as $fld) {
+            foreach ($this->matchData as $data)
+                $fldMtch[] = array('value:LIKE' => "%$data%");
+        }
+        $c->where($fldMtch,xPDOQuery::SQL_OR);
+
+        if (!empty($this->config['parents'])) {
+            $c->where(array(
+                'Resource.parent:IN' => $this->config['parents'],
+            ));
+        }
+
+        if (!$this->config['includeUnpublished']) {
+            $c->where(array('Resource.published' => 1));
+        }
+        if (!$this->config['includeHidden']) {
+            $c->where(array('Resource.hidemenu' => 1));
+        }
+
+        $returnFields = array('id','value','name');
+        foreach ($this->config['returnFields'] as $fld) {
+            if (!in_array($fld,$returnFields))
+                $returnFields[] = $fld;
+        }
+
+        $col = $this->modx->getCollection('modTemplateVarResource',$c);
+        foreach ($col as $item) {
+            $array = $item->get($returnFields);
+            foreach ($returnFields as $fld) {
+                if ($fld == 'value' || $fld == 'name') continue;
+                $this->related[$array['id']][$fld] = $array[$fld];
+            }
+            $this->related[$array['id']][$array['name']] = $array['value'];
+        }
+        return $this->related;
     }
 
     private function _calculateRelatedRank() {
@@ -228,8 +288,8 @@ class getRelated {
         /* loop through related resources */
         foreach ($this->related as $index => $array) {
             $rank = 0;
-            /* Loop through fields and each fields' value */
-            foreach ($this->fields as $fld) {
+            /* Loop through fields & TVs and each fields' value */
+            foreach (array_merge($this->fields,$this->tvs) as $fld) {
                 foreach ($this->matchData as $match) {
                     /* Calculate a rank and add it to the total resource rank */
                     $count = substr_count(strtolower($array[$fld]),$match);
@@ -251,9 +311,8 @@ class getRelated {
             }
         );
 
+        $this->related = $tmpArray;
         return $tmpArray;
-
-
     }
 }
 
