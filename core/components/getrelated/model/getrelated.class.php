@@ -57,7 +57,15 @@ class getRelated {
 
         $this->config['returnFields'] = explode(',',$this->config['returnFields']);
         $this->config['parents'] = !empty($this->config['parents']) ? explode(',',$this->config['parents']) : array();
-        $this->config['contexts'] = !empty($this->config['contexts']) ? explode(',',$this->config['contexts']) : array();
+        $this->config['contexts'] = !empty($this->config['contexts']) ? explode(',',$this->config['contexts']) : array($this->modx->context->get('key'));
+        if (count($this->config['parents']) > 0) {
+            $a = array();
+            foreach ($this->config['parents'] as $prnt) {
+                foreach ($this->config['contexts'] as $ctx)
+                $a = array_merge($a,$this->modx->getChildIds($prnt, $this->config['parentsDepth'],array('context' => $ctx)));
+            }
+        }
+        if (isset($a) && count($a) > 0) $this->config['parents'] = $a;
 
         $fields = explode(',',$this->config['fields']);
         foreach ($fields as $fld) {
@@ -214,7 +222,14 @@ class getRelated {
                 $fldMtch[] = array($fld.':LIKE' => "%$data%");
         }
         $c->where($fldMtch,xPDOQuery::SQL_OR);
-        $c->andCondition(array('modResource.id:!=' => $this->resource->get('id') ));
+        $c->andCondition(
+            array(
+                'modResource.id:!=' => $this->resource->get('id'),
+                'context_key:IN' => $this->config['contexts'],
+            )
+        );
+        if (!empty($this->config['parents']))
+            $c->andCondition(array('parent:IN' => $this->config['parents']));
 
         $c->sortby($this->config['fieldSort'],$this->config['fieldSortDir']);
         $c->limit($this->config['fieldSample']);
@@ -246,7 +261,6 @@ class getRelated {
         $c = $this->modx->newQuery('modTemplateVarResource');
         $c->innerJoin('modTemplateVar','TemplateVar');
         $c->innerJoin('modResource','Resource');
-        $c->where(array('contentid:!=' => $this->resource->get('id') ));
 
         $selectFields = array('tvid' => 'modTemplateVarResource.id', 'Resource.id','value','name');
         foreach ($this->config['returnFields'] as $fld) {
@@ -278,11 +292,14 @@ class getRelated {
         $c->sortby($this->config['tvSort'],$this->config['tvSortDir']);
         $c->limit($this->config['tvSample']);
 
-        if (!empty($this->config['parents'])) {
-            $c->where(array(
-                'Resource.parent:IN' => $this->config['parents'],
-            ));
-        }
+        $c->andCondition(
+            array(
+                'Resource.id:!=' => $this->resource->get('id'),
+                'Resource.context_key:IN' => $this->config['contexts'],
+            )
+        );
+        if (!empty($this->config['parents']))
+            $c->andCondition(array('parent:IN' => $this->config['parents']));
 
         if (!$this->config['includeUnpublished']) {
             $c->where(array('Resource.published' => 1));

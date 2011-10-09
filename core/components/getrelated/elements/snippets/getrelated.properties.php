@@ -23,15 +23,15 @@
 
 return array(
     'resource' => 'current',
-    'fields' => 'pagetitle:3,tv.MyTags:7,tv.MySubjects:15,introtext:2',
+    'fields' => 'pagetitle:3,introtext:2',
     'returnFields' => 'pagetitle,longtitle,introtext',
 
     'parents' => '',
-    'contexts' => 'web',
+    'parentsDepth' => 10,
+    'contexts' => '',
     'includeUnpublished' => false,
     'includeHidden' => true,
 
-    'start' => 0,
     'limit' => 3,
 
     'fieldSample' => 125,
@@ -43,6 +43,7 @@ return array(
 
     'tplOuter' => 'relatedOuter',
     'tplRow' => 'relatedRow',
+    'noResults' => 'No related pages found.',
 
     'toPlaceholder' => '',
     'rowSeparator' => "\n",

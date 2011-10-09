@@ -32,10 +32,8 @@ $p = array_merge($p,$scriptProperties);
 $getRelated = $modx->getService('getrelated','getRelated',$path.'model/',$p);
 if (!($getRelated instanceof getRelated)) return $modx->lexicon('getrelated.errorloadingclass',array('path' => $path.'model/'));
 
-
 /* Get the possibly related resources based on the $matchData found. */
 $success = $getRelated->getRelated();
-if ($success !== true) return $success;
 
 if ($p['debug']) {
     echo 'Config'; var_dump($getRelated->config);
@@ -43,6 +41,12 @@ if ($p['debug']) {
     echo 'TVs'; var_dump($getRelated->tvs);
     echo 'Match Data'; var_dump($getRelated->matchData);
     echo 'All Related'; var_dump($getRelated->related);
+}
+
+if ($success !== true) return $success;
+
+if (count($getRelated->related) < 1) {
+    return $getRelated->config['noResults'];
 }
 
 $output = array();
