@@ -45,6 +45,7 @@ class getRelated {
      */
     function __construct(modX &$modx,array $config = array()) {
         $this->modx =& $modx;
+        $this->modx->lexicon->load('getrelated:default');
  
         $basePath = $this->modx->getOption('getrelated.core_path',$config,$this->modx->getOption('core_path').'components/getrelated/');
         $this->config = array_merge(array(
@@ -75,21 +76,6 @@ class getRelated {
         else {
             $this->resource = $this->modx->getObject('modResource',$this->config['resource']);
         }
-    }
-
-    /**
-     * @param string $ctx Context name
-     * @return bool
-     */
-    public function initialize($ctx = 'web') {
-        switch ($ctx) {
-            case 'mgr':
-                $modelpath = $this->config['model_path'];
-                $this->modx->addPackage('getrelated',$modelpath);
-                $this->modx->lexicon->load('getrelated:default');
-            break;
-        }
-        return true;
     }
 
     /**
@@ -176,7 +162,10 @@ class getRelated {
         $filteredValues = array();
         foreach ($values as $v) {
             $v = preg_replace('/[^a-z0-9\s]/', '', strtolower($v));
-            if (!in_array(strtolower($v),$this->stopwords) && !in_array(strtolower($v),$filteredValues))
+            if (!in_array(strtolower($v),$this->stopwords) &&
+                !in_array(strtolower($v),$filteredValues) &&
+                !empty($v) &&
+                (strlen($v) > 0))
                 $filteredValues[] = strtolower($v);
         }
 
@@ -195,7 +184,7 @@ class getRelated {
      */
     public function getRelated() {
         if (empty($this->fields) && empty($this->tvs)) return 'No fields to search in.';
-        $this->getMatchData();
+        if (!$this->getMatchData()) { return 'Error collecting data to match against.'; }
         if (count($this->matchData) < 1) { return 'Not enough distinctive data available.'; }
 
         $this->_getFieldRelated();
@@ -226,6 +215,10 @@ class getRelated {
         }
         $c->where($fldMtch,xPDOQuery::SQL_OR);
         $c->andCondition(array('modResource.id:!=' => $this->resource->get('id') ));
+
+        $c->sortby($this->config['fieldSort'],$this->config['fieldSortDir']);
+        $c->limit($this->config['fieldSample']);
+        
         if ($this->config['debug']) {
             $c->prepare();
             echo $c->toSQL();
@@ -282,6 +275,9 @@ class getRelated {
 
         $c->where($fldMtch,xPDOQuery::SQL_OR);
 
+        $c->sortby($this->config['tvSort'],$this->config['tvSortDir']);
+        $c->limit($this->config['tvSample']);
+
         if (!empty($this->config['parents'])) {
             $c->where(array(
                 'Resource.parent:IN' => $this->config['parents'],
@@ -305,7 +301,6 @@ class getRelated {
         foreach ($col as $item) {
             if ($item instanceof modTemplateVarResource) {
                 $array = $item->toArray('',false,true);
-                var_dump($array);
                 foreach ($array as $fld) {
                     if ($fld == 'value' || $fld == 'name') continue;
                     $this->related[$array['id']][$fld] = $array[$fld];
@@ -331,8 +326,10 @@ class getRelated {
             foreach (array_merge($this->fields,$this->tvs) as $fld) {
                 foreach ($this->matchData as $match) {
                     /* Calculate a rank and add it to the total resource rank */
-                    $count = substr_count(strtolower($array[$fld]),$match);
-                    $rank += $count * $this->weight[$fld];
+                    if ((strlen($array[$fld]) > 0) && !empty($match)) {
+                        $count = substr_count(strtolower($array[$fld]),$match);
+                        if ($count > 0) $rank += $count * $this->weight[$fld];
+                    }
                 }
             }
             $tmpArray[] = array_merge(array(

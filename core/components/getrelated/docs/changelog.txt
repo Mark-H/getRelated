@@ -1,8 +1,8 @@
 ++++++++++++++++++++++++++++++++++++
 ++                                ++
-++    getRelated 0.0.0-dev        ++
-++         Released: 00/00/2011   ++
+++    getRelated 0.9.1-dev        ++
+++         Released: 10/10/2011   ++
 ++                                ++
 ++++++++++++++++++++++++++++++++++++
 
-
+Add properties to decide on the sample size to increase accuracy / decrease loading times.

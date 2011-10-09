@@ -34,6 +34,13 @@ return array(
     'start' => 0,
     'limit' => 3,
 
+    'fieldSample' => 125,
+    'fieldSort' => 'createdon',
+    'fieldSortDir' => 'desc',
+    'tvSample' => 125,
+    'tvSort' => 'createdon',
+    'tvSortDir' => 'desc',
+
     'tplOuter' => 'relatedOuter',
     'tplRow' => 'relatedRow',
 
@@ -41,6 +48,6 @@ return array(
     'rowSeparator' => "\n",
 
     'defaultWeight' => 5,
-    'debug' => false
+    'debug' => true
 );
 ?>

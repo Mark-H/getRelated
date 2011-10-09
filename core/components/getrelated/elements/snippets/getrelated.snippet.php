@@ -24,19 +24,25 @@
  * @var getRelated $getRelated
  * @var array $scriptProperties
  */
+$path = $modx->getOption('getrelated.core_path',null,$modx->getOption('core_path').'components/getrelated/');
 
-$p = include 'getrelated.properties.php';
+$p = include $path.'elements/snippets/getrelated.properties.php';
 $p = array_merge($p,$scriptProperties);
 
-$getRelated = $modx->getService('getrelated','getRelated',$modx->getOption('getrelated.core_path',null,$modx->getOption('core_path').'components/getrelated/').'model/',$p);
-if (!($getRelated instanceof getRelated)) return 'Error loading class.';
-$modx->lexicon->load('getrelated:default');
+$getRelated = $modx->getService('getrelated','getRelated',$path.'model/',$p);
+if (!($getRelated instanceof getRelated)) return 'Error loading getRelated class.';
 
-if ($p['debug']) { var_dump($getRelated->config); var_dump($getRelated->fields); var_dump($getRelated->tvs); var_dump($getRelated->matchData); }
 
 /* Get the possibly related resources based on the $matchData found. */
 $getRelated->getRelated();
-if ($p['debug']) var_dump($getRelated->related);
+
+if ($p['debug']) {
+    echo 'Config'; var_dump($getRelated->config);
+    echo 'Fields'; var_dump($getRelated->fields);
+    echo 'TVs'; var_dump($getRelated->tvs);
+    echo 'Match Data'; var_dump($getRelated->matchData);
+    echo 'All Related'; var_dump($getRelated->related);
+}
 
 $output = array();
 $i = 0;
