@@ -22,18 +22,27 @@
 */
 
 class getRelated {
+    /* @var modX $modx */
     public $modx;
     public $config = array();
     public $stopwords = array('a','able','about','above','abroad','according','accordingly','across','actually','adj','after','afterwards','again','against','ago','ahead','ain\'t','all','allow','allows','almost','alone','along','alongside','already','also','although','always','am','amid','amidst','among','amongst','an','and','another','any','anybody','anyhow','anyone','anything','anyway','anyways','anywhere','apart','appear','appreciate','appropriate','are','aren\'t','around','as','a\'s','aside','ask','asking','associated','at','available','away','awfully','b','back','backward','backwards','be','became','because','become','becomes','becoming','been','before','beforehand','begin','behind','being','believe','below','beside','besides','best','better','between','beyond','both','brief','but','by','c','came','can','cannot','cant','can\'t','caption','cause','causes','certain','certainly','changes','clearly','c\'mon','co','co.','com','come','comes','concerning','consequently','consider','considering','contain','containing','contains','corresponding','could','couldn\'t','course','c\'s','currently','d','dare','daren\'t','definitely','described','despite','did','didn\'t','different','directly','do','does','doesn\'t','doing','done','don\'t','down','downwards','during','e','each','edu','eg','eight','eighty','either','else','elsewhere','end','ending','enough','entirely','especially','et','etc','even','ever','evermore','every','everybody','everyone','everything','everywhere','ex','exactly','example','except','f','fairly','far','farther','few','fewer','fifth','first','five','followed','following','follows','for','forever','former','formerly','forth','forward','found','four','from','further','furthermore','g','get','gets','getting','given','gives','go','goes','going','gone','got','gotten','greetings','h','had','hadn\'t','half','happens','hardly','has','hasn\'t','have','haven\'t','having','he','he\'d','he\'ll','hello','help','hence','her','here','hereafter','hereby','herein','here\'s','hereupon','hers','herself','he\'s','hi','him','himself','his','hither','hopefully','how','howbeit','however','hundred','i','i\'d','ie','if','ignored','i\'ll','i\'m','immediate','in','inasmuch','inc','inc.','indeed','indicate','indicated','indicates','inner','inside','insofar','instead','into','inward','is','isn\'t','it','it\'d','it\'ll','its','it\'s','itself','i\'ve','j','just','k','keep','keeps','kept','know','known','knows','l','last','lately','later','latter','latterly','least','less','lest','let','let\'s','like','liked','likely','likewise','little','look','looking','looks','low','lower','ltd','m','made','mainly','make','makes','many','may','maybe','mayn\'t','me','mean','meantime','meanwhile','merely','might','mightn\'t','mine','minus','miss','more','moreover','most','mostly','mr','mrs','much','must','mustn\'t','my','myself','n','name','namely','nd','near','nearly','necessary','need','needn\'t','needs','neither','never','neverf','neverless','nevertheless','new','next','nine','ninety','no','nobody','non','none','nonetheless','noone','no-one','nor','normally','not','nothing','notwithstanding','novel','now','nowhere','o','obviously','of','off','often','oh','ok','okay','old','on','once','one','ones','one\'s','only','onto','opposite','or','other','others','otherwise','ought','oughtn\'t','our','ours','ourselves','out','outside','over','overall','own','p','particular','particularly','past','per','perhaps','placed','please','plus','possible','presumably','probably','provided','provides','q','que','quite','qv','r','rather','rd','re','really','reasonably','recent','recently','regarding','regardless','regards','relatively','respectively','right','round','s','said','same','saw','say','saying','says','second','secondly','see','seeing','seem','seemed','seeming','seems','seen','self','selves','sensible','sent','serious','seriously','seven','several','shall','shan\'t','she','she\'d','she\'ll','she\'s','should','shouldn\'t','since','six','so','some','somebody','someday','somehow','someone','something','sometime','sometimes','somewhat','somewhere','soon','sorry','specified','specify','specifying','still','sub','such','sup','sure','t','take','taken','taking','tell','tends','th','than','thank','thanks','thanx','that','that\'ll','thats','that\'s','that\'ve','the','their','theirs','them','themselves','then','thence','there','thereafter','thereby','there\'d','therefore','therein','there\'ll','there\'re','theres','there\'s','thereupon','there\'ve','these','they','they\'d','they\'ll','they\'re','they\'ve','thing','things','think','third','thirty','this','thorough','thoroughly','those','though','three','through','throughout','thru','thus','till','to','together','too','took','toward','towards','tried','tries','truly','try','trying','t\'s','twice','two','u','un','under','underneath','undoing','unfortunately','unless','unlike','unlikely','until','unto','up','upon','upwards','us','use','used','useful','uses','using','usually','v','value','various','versus','very','via','viz','vs','w','want','wants','was','wasn\'t','way','we','we\'d','welcome','well','we\'ll','went','were','we\'re','weren\'t','we\'ve','what','whatever','what\'ll','what\'s','what\'ve','when','whence','whenever','where','whereafter','whereas','whereby','wherein','where\'s','whereupon','wherever','whether','which','whichever','while','whilst','whither','who','who\'d','whoever','whole','who\'ll','whom','whomever','who\'s','whose','why','will','willing','wish','with','within','without','wonder','won\'t','would','wouldn\'t','x','y','yes','yet','you','you\'d','you\'ll','your','you\'re','yours','yourself','yourselves','you\'ve','z','zero');
 
     /* @var modResource $resource */
-    public $resource = null;
+    public $resource;
     public $fields = array();
     public $weight = array();
     public $tvs = array();
     public $matchData = array();
     public $related = array();
+    public $chunks = array();
 
+    /**
+     * Constructs the getRelated class.
+     * 
+     * @param \modX $modx
+     * @param array $config
+     * @return \getRelated
+     */
     function __construct(modX &$modx,array $config = array()) {
         $this->modx =& $modx;
  
@@ -59,6 +68,12 @@ class getRelated {
                 $this->fields[] = $tmp[0];
             }
             $this->weight[$tmp[0]] = (is_numeric($tmp[1])) ? (int)$tmp[1] : $this->config['defaultWeight'];
+        }
+
+        if (empty($this->config['resource']) || ($this->config['resource'] == $this->modx->resource->get('id')))
+            $this->resource = $this->modx->resource;
+        else {
+            $this->resource = $this->modx->getObject('modResource',$this->config['resource']);
         }
     }
 
@@ -120,6 +135,7 @@ class getRelated {
         $f = $this->config['elements_path'].'chunks/'.strtolower($name).$postFix;
         if (file_exists($f)) {
             $o = file_get_contents($f);
+            /* @var modChunk $chunk */
             $chunk = $this->modx->newObject('modChunk');
             $chunk->set('name',$name);
             $chunk->setContent($o);
@@ -133,18 +149,9 @@ class getRelated {
      *
      * This method also filters out duplicates, non alpha numeric signs and stop words.
      *
-     * @param int $resid
-     * @param array $fields
-     * @return array|false
+     * @return bool
      */
-    public function getMatchData($resid = 0, $fields = array()) {
-        if (!$this->resource) {
-            if ($this->modx->resource->id == $resid) {
-                $this->resource = $this->modx->resource;
-            } else {
-                $this->resource = $this->modx->getObject('modResource',$resid);
-            }
-        }
+    public function getMatchData() {
         if (!($this->resource instanceof modResource)) return false;
 
         /* Fetch TV data */
@@ -174,20 +181,35 @@ class getRelated {
         }
 
         $this->matchData = $filteredValues;
-        return $this->matchData;
+        return true;
     }
 
+    /**
+     * Gets related resources based on fields and TVs.
+     * Sorts data based on the weights and results.
+     * Returns a multi-dimensional array with results (not a collection of objects).
+     *
+     * Calls _getFieldRelated(), _getTVRelated() and _calculateRelatedRank().
+     *
+     * @return array|string
+     */
     public function getRelated() {
         if (empty($this->fields) && empty($this->tvs)) return 'No fields to search in.';
-        if (empty($this->matchData)) return 'No data to match with';
+        $this->getMatchData();
+        if (count($this->matchData) < 1) { return 'Not enough distinctive data available.'; }
 
         $this->_getFieldRelated();
-        $this->_getTVRelated();
+        if (count($this->tvs) > 0) { $this->_getTVRelated(); }
         $this->_calculateRelatedRank();
 
         return $this->related;
     }
 
+    /**
+     * Get resources that are related based on resource field values.
+     *
+     * @return array
+     */
     private function _getFieldRelated() {
         $c = $this->modx->newQuery('modResource');
         $selectFields = array('id');
@@ -203,10 +225,11 @@ class getRelated {
                 $fldMtch[] = array($fld.':LIKE' => "%$data%");
         }
         $c->where($fldMtch,xPDOQuery::SQL_OR);
-        $c->andCondition(array('id:!=' => $this->resource->id ));
+        $c->andCondition(array('id:!=' => $this->resource->get('id') ));
         $c->prepare();
 
         $col = $this->modx->getCollection('modResource',$c);
+        /* @var modResource $item */
         foreach ($col as $item) {
             $array = $item->get($selectFields);
             if (!$this->related[$array['id']])
@@ -215,14 +238,20 @@ class getRelated {
 
         return $this->related;
     }
+
+    /**
+     * Get resources that are related based on TV values.
+     *
+     * @return array
+     */
     private function _getTVRelated() {
         /* get TV values */
         $c = $this->modx->newQuery('modTemplateVarResource');
         $c->innerJoin('modTemplateVar','TemplateVar');
         $c->innerJoin('modResource','Resource');
-        $c->andCondition(array('contentid:!=' => $this->resource->id ));
+        $c->andCondition(array('contentid:!=' => $this->resource->get('id') ));
 
-        $selectFields = array('`Resource`.`id`','value','name');
+        $selectFields = array('Resource.id','value','TemplateVar.name');
         foreach ($this->config['returnFields'] as $fld) {
             if (!in_array($fld,$selectFields))
                 $selectFields[] = $fld;
@@ -244,10 +273,9 @@ class getRelated {
         $c->where($tvSelect,xPDOQuery::SQL_OR);
 
         $fldMtch = array();
-        foreach ($this->fields as $fld) {
-            foreach ($this->matchData as $data)
-                $fldMtch[] = array('value:LIKE' => "%$data%");
-        }
+        foreach ($this->matchData as $data)
+            $fldMtch[] = array('value:LIKE' => "%$data%");
+
         $c->where($fldMtch,xPDOQuery::SQL_OR);
 
         if (!empty($this->config['parents'])) {
@@ -270,6 +298,7 @@ class getRelated {
         }
 
         $col = $this->modx->getCollection('modTemplateVarResource',$c);
+        /* @var modTemplateVarResource $item */
         foreach ($col as $item) {
             $array = $item->get($returnFields);
             foreach ($returnFields as $fld) {
@@ -281,11 +310,16 @@ class getRelated {
         return $this->related;
     }
 
+    /**
+     * Calculates a rank for every related resource based on individual field rankings.
+     *
+     * @return array
+     */
     private function _calculateRelatedRank() {
         $tmpArray = array();
 
         /* loop through related resources */
-        foreach ($this->related as $index => $array) {
+        foreach ($this->related as $array) {
             $rank = 0;
             /* Loop through fields & TVs and each fields' value */
             foreach (array_merge($this->fields,$this->tvs) as $fld) {

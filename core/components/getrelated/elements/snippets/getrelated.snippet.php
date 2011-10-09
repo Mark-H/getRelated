@@ -28,18 +28,11 @@
 $p = include 'getrelated.properties.php';
 $p = array_merge($p,$scriptProperties);
 
-$p['resource'] = (($p['resource'] == 'current') || empty($p['resource'])) ? $modx->resource->id : (int)$p['resource'];
-if (empty($p['resource'])) return 'Invalid resource identifier.';
-
 $getRelated = $modx->getService('getrelated','getRelated',$modx->getOption('getrelated.core_path',null,$modx->getOption('core_path').'components/getrelated/').'model/',$p);
 if (!($getRelated instanceof getRelated)) return 'Error loading class.';
 $modx->lexicon->load('getrelated:default');
 
 if ($p['debug']) var_dump($getRelated->config);
-
-/* Get the data we want to match. These are defined based on the resource and the fields. */
-$matchData = $getRelated->getMatchData($p['resource'],$p['fields']);
-if (count($matchData) < 1) return 'Not enough data to find related resources :(';
 
 /* Get the possibly related resources based on the $matchData found. */
 $getRelated->getRelated();
