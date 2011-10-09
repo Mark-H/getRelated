@@ -5,5 +5,6 @@
 ++                                ++
 ++++++++++++++++++++++++++++++++++++
 
-Internationalization
+Add context & parent support.
+Internationalization and property descriptions.
 Add properties to decide on the sample size to increase accuracy / decrease loading times.
