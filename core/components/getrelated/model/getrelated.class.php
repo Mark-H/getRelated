@@ -183,15 +183,15 @@ class getRelated {
      * @return array|string
      */
     public function getRelated() {
-        if (empty($this->fields) && empty($this->tvs)) return 'No fields to search in.';
-        if (!$this->getMatchData()) { return 'Error collecting data to match against.'; }
-        if (count($this->matchData) < 1) { return 'Not enough distinctive data available.'; }
+        if (empty($this->fields) && empty($this->tvs)) return $this->modx->lexicon('getrelated.error.nofields');
+        if (!$this->getMatchData()) { return $this->modx->lexicon('getrelated.error.invalidresource'); }
+        if (count($this->matchData) < 1) { return $this->modx->lexicon('getrelated.error.nodistinctivedata'); }
 
         $this->_getFieldRelated();
         if (count($this->tvs) > 0) { $this->_getTVRelated(); }
         $this->_calculateRelatedRank();
 
-        return $this->related;
+        return true;
     }
 
     /**
@@ -233,7 +233,7 @@ class getRelated {
                     $this->related[$array['id']] = $array;
             }
         }
-        return $this->related;
+        return true;
     }
 
     /**
@@ -301,14 +301,14 @@ class getRelated {
         foreach ($col as $item) {
             if ($item instanceof modTemplateVarResource) {
                 $array = $item->toArray('',false,true);
-                foreach ($array as $fld) {
-                    if ($fld == 'value' || $fld == 'name') continue;
-                    $this->related[$array['id']][$fld] = $array[$fld];
+                foreach ($array as $key => $fld) {
+                    if ($key == 'value' || $key == 'name') continue;
+                    $this->related[$array['id']][$key] = $fld;
                 }
                 $this->related[$array['id']][$array['name']] = $array['value'];
             }
         }
-        return $this->related;
+        return true;
     }
 
     /**
@@ -348,7 +348,7 @@ class getRelated {
         );
 
         $this->related = $tmpArray;
-        return $tmpArray;
+        return true;
     }
 }
 

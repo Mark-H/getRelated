@@ -5,4 +5,5 @@
 ++                                ++
 ++++++++++++++++++++++++++++++++++++
 
+Internationalization
 Add properties to decide on the sample size to increase accuracy / decrease loading times.

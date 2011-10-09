@@ -30,11 +30,12 @@ $p = include $path.'elements/snippets/getrelated.properties.php';
 $p = array_merge($p,$scriptProperties);
 
 $getRelated = $modx->getService('getrelated','getRelated',$path.'model/',$p);
-if (!($getRelated instanceof getRelated)) return 'Error loading getRelated class.';
+if (!($getRelated instanceof getRelated)) return $modx->lexicon('getrelated.errorloadingclass',array('path' => $path.'model/'));
 
 
 /* Get the possibly related resources based on the $matchData found. */
-$getRelated->getRelated();
+$success = $getRelated->getRelated();
+if ($success !== true) return $success;
 
 if ($p['debug']) {
     echo 'Config'; var_dump($getRelated->config);
