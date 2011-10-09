@@ -70,7 +70,7 @@ class getRelated {
             $this->weight[$tmp[0]] = (is_numeric($tmp[1])) ? (int)$tmp[1] : $this->config['defaultWeight'];
         }
 
-        if (empty($this->config['resource']) || ($this->config['resource'] == $this->modx->resource->get('id')))
+        if (empty($this->config['resource']) || ($this->config['resource'] == $this->modx->resource->get('id')) || ($this->config['resource'] == 'current'))
             $this->resource = $this->modx->resource;
         else {
             $this->resource = $this->modx->getObject('modResource',$this->config['resource']);
@@ -225,17 +225,21 @@ class getRelated {
                 $fldMtch[] = array($fld.':LIKE' => "%$data%");
         }
         $c->where($fldMtch,xPDOQuery::SQL_OR);
-        $c->andCondition(array('id:!=' => $this->resource->get('id') ));
-        $c->prepare();
+        $c->andCondition(array('modResource.id:!=' => $this->resource->get('id') ));
+        if ($this->config['debug']) {
+            $c->prepare();
+            echo $c->toSQL();
+        }
 
         $col = $this->modx->getCollection('modResource',$c);
         /* @var modResource $item */
         foreach ($col as $item) {
-            $array = $item->get($selectFields);
-            if (!$this->related[$array['id']])
-                $this->related[$array['id']] = $array;
+            if ($item instanceof modResource) {
+                $array = $item->toArray('',false,true);
+                if (empty($this->related[$array['id']]))
+                    $this->related[$array['id']] = $array;
+            }
         }
-
         return $this->related;
     }
 
@@ -249,12 +253,12 @@ class getRelated {
         $c = $this->modx->newQuery('modTemplateVarResource');
         $c->innerJoin('modTemplateVar','TemplateVar');
         $c->innerJoin('modResource','Resource');
-        $c->andCondition(array('contentid:!=' => $this->resource->get('id') ));
+        $c->where(array('contentid:!=' => $this->resource->get('id') ));
 
-        $selectFields = array('Resource.id','value','TemplateVar.name');
+        $selectFields = array('tvid' => 'modTemplateVarResource.id', 'Resource.id','value','name');
         foreach ($this->config['returnFields'] as $fld) {
             if (!in_array($fld,$selectFields))
-                $selectFields[] = $fld;
+                $selectFields = array_merge($selectFields,array($fld => 'Resource.'.$fld));
         }
         $c->select($selectFields);
 
@@ -291,21 +295,23 @@ class getRelated {
             $c->where(array('Resource.hidemenu' => 1));
         }
 
-        $returnFields = array('id','value','name');
-        foreach ($this->config['returnFields'] as $fld) {
-            if (!in_array($fld,$returnFields))
-                $returnFields[] = $fld;
+        if ($this->config['debug']) {
+            $c->prepare();
+            echo $c->toSQL();
         }
 
         $col = $this->modx->getCollection('modTemplateVarResource',$c);
         /* @var modTemplateVarResource $item */
         foreach ($col as $item) {
-            $array = $item->get($returnFields);
-            foreach ($returnFields as $fld) {
-                if ($fld == 'value' || $fld == 'name') continue;
-                $this->related[$array['id']][$fld] = $array[$fld];
+            if ($item instanceof modTemplateVarResource) {
+                $array = $item->toArray('',false,true);
+                var_dump($array);
+                foreach ($array as $fld) {
+                    if ($fld == 'value' || $fld == 'name') continue;
+                    $this->related[$array['id']][$fld] = $array[$fld];
+                }
+                $this->related[$array['id']][$array['name']] = $array['value'];
             }
-            $this->related[$array['id']][$array['name']] = $array['value'];
         }
         return $this->related;
     }

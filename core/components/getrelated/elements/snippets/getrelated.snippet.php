@@ -32,7 +32,7 @@ $getRelated = $modx->getService('getrelated','getRelated',$modx->getOption('getr
 if (!($getRelated instanceof getRelated)) return 'Error loading class.';
 $modx->lexicon->load('getrelated:default');
 
-if ($p['debug']) var_dump($getRelated->config);
+if ($p['debug']) { var_dump($getRelated->config); var_dump($getRelated->fields); var_dump($getRelated->tvs); var_dump($getRelated->matchData); }
 
 /* Get the possibly related resources based on the $matchData found. */
 $getRelated->getRelated();
