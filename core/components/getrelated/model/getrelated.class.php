@@ -357,11 +357,7 @@ class getRelated {
         /* Sort on rank (hi>lo) and if equal on ID (hi>lo) */
         uasort(
             $tmpArray,
-            function ($a, $b) {
-                if ($a['rank'] == $b['rank'])
-                    return $a['id'] < $b['id'] ? 1 : -1;
-                return $a['rank'] < $b['rank'] ? 1 : -1;
-            }
+            'mysort'
         );
 
         $this->related = $tmpArray;
@@ -369,4 +365,15 @@ class getRelated {
     }
 }
 
+/**
+ * Simple custom sort function to sort on rank first, and when equal on ID (assuming the highest ID is the most recent resource).
+ * @param $a
+ * @param $b
+ * @return int
+ */
+function mysort ($a, $b) {
+    if ($a['rank'] == $b['rank'])
+        return $a['id'] < $b['id'] ? 1 : -1;
+    return $a['rank'] < $b['rank'] ? 1 : -1;
+}
 ?>
