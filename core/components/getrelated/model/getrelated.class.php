@@ -301,7 +301,7 @@ class getRelated {
             )
         );
         if (!empty($this->config['parents']))
-            $c->andCondition(array('parent:IN' => $this->config['parents']));
+            $c->andCondition(array('Resource.parent:IN' => $this->config['parents']));
 
         if (!$this->config['includeUnpublished']) {
             $c->where(array('Resource.published' => 1));
