@@ -1,9 +1,10 @@
 ++++++++++++++++++++++++++++++++++++
 ++                                ++
-++    getRelated 1.0.1-pl         ++
+++    getRelated 1.0.1-pl2        ++
 ++         Released: 27/10/2011   ++
 ++                                ++
 ++++++++++++++++++++++++++++++++++++
+Fix bug where tpl files are chosen over actual chunks.
 Fix bug with &parents and TVs in the &fields property.
 Add custom sort function to class for cleanliness
 
