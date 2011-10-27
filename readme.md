@@ -1,5 +1,22 @@
-## About getRelated
++++++++++++++++++++++++++++++++++++
 
-getRelated is a snippet for MODX Revolution that automatically gets related resources based on the fields you specify.
+++                               ++
 
-It is being developed by Mark Hamstra for Vierkante Meter in October 2011 and will be released as open source when finished.
+++   getRelated                  ++
+
+++   Developer:  Mark Hamstra    ++
+
+++   License:    GPL GNU v2      ++
+
+++                               ++
+
++++++++++++++++++++++++++++++++++++
+
+getRelated is a snippet for MODX Revolution that automatically finds related pages based on fields you specify.
+
+It has been developed by Mark Hamstra for Vierkante Meter.
+
+Forum Discussion:   http://forums.modx.com/thread/71009/getrelated-automatically-listing-related-resources-for-revolution
+Documentation: 		http://rtfm.modx.com/display/ADDON/getRelated
+Bugs & Features: 	https://github.com/Mark-H/getRelated/issues
+Commercial Support:	hello@markhamstra.com
