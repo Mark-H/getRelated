@@ -233,6 +233,13 @@ class getRelated {
         if (!empty($this->config['parents']))
             $c->andCondition(array('parent:IN' => $this->config['parents']));
 
+        if (!$this->config['includeUnpublished']) {
+            $c->where(array('modResource.published' => 1));
+        }
+        if (!$this->config['includeHidden']) {
+            $c->where(array('modResource.hidemenu' => 1));
+        }
+
         $c->sortby($this->config['fieldSort'],$this->config['fieldSortDir']);
         $c->limit($this->config['fieldSample']);
         
