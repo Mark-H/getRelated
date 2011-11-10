@@ -278,44 +278,34 @@ class getRelated {
         }
         $c->select($selectFields);
 
+        /* Set up conditions */
+        $conditions = array();
+        $conditions['contentid:!='] = $this->resource->get('id');
+        $conditions['Resource.context_key:IN'] = $this->config['contexts'];
+
+        if (!empty($this->config['parents'])) $conditions['Resource.parent:IN'] = $this->config['parents'];
+        if (!$this->config['includeUnpublished']) $conditions['Resource.published'] = 1;
+        if (!$this->config['includeHidden']) $conditions['Resource.hidemenu'] = 1;
+
+        /* Get the TV names to search in */
         $useTVs = array();
-        /* Make sure we don't have duplicates */
         foreach ($this->tvs as $tv) {
             if (!in_array($tv,$useTVs))
                 $useTVs[] = $tv;
         }
-        /* Set up the sources */
-        $tvSelect = array();
-        foreach ($useTVs as $tv) {
-            $tvSelect[] = array('`TemplateVar`.`name`' => $tv);
-        }
+        if (!empty($useTVs)) $conditions['TemplateVar.name:IN'] = $useTVs;
 
-        $c->where($tvSelect,xPDOQuery::SQL_OR);
+        $c->where($conditions);
 
+        /* Set up the data to match with */
         $fldMtch = array();
         foreach ($this->matchData as $data)
             $fldMtch[] = "LOWER(value) LIKE '%".$data."%'";
-
-        $c->where($fldMtch,xPDOQuery::SQL_OR);
+        $fldMtch = implode(' OR ',$fldMtch);
+        $c->andCondition('('.$fldMtch.')');
 
         $c->sortby($this->config['tvSort'],$this->config['tvSortDir']);
         $c->limit($this->config['tvSample']);
-
-        $c->andCondition(
-            array(
-                'Resource.id:!=' => $this->resource->get('id'),
-                'Resource.context_key:IN' => $this->config['contexts'],
-            )
-        );
-        if (!empty($this->config['parents']))
-            $c->andCondition(array('`Resource`.`parent`:IN' => $this->config['parents']));
-
-        if (!$this->config['includeUnpublished']) {
-            $c->where(array('Resource.published' => 1));
-        }
-        if (!$this->config['includeHidden']) {
-            $c->where(array('Resource.hidemenu' => 1));
-        }
 
         if ($this->config['debug']) {
             $c->prepare();
