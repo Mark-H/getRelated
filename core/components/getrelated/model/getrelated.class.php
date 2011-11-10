@@ -221,7 +221,7 @@ class getRelated {
         $fldMtch = array();
         foreach ($this->fields as $fld) {
             foreach ($this->matchData as $data)
-                $fldMtch[] = array($fld.':LIKE' => "%$data%");
+                $fldMtch[] = "LOWER(`modResource`.`".$fld."`) LIKE '%$data%'";
         }
         $c->where($fldMtch,xPDOQuery::SQL_OR);
         $c->andCondition(
@@ -294,7 +294,7 @@ class getRelated {
 
         $fldMtch = array();
         foreach ($this->matchData as $data)
-            $fldMtch[] = array('value:LIKE' => "%$data%");
+            $fldMtch[] = "LOWER(value) LIKE '%".$data."%'";
 
         $c->where($fldMtch,xPDOQuery::SQL_OR);
 
@@ -308,7 +308,7 @@ class getRelated {
             )
         );
         if (!empty($this->config['parents']))
-            $c->andCondition(array('Resource.parent:IN' => $this->config['parents']));
+            $c->andCondition(array('`Resource`.`parent`:IN' => $this->config['parents']));
 
         if (!$this->config['includeUnpublished']) {
             $c->where(array('Resource.published' => 1));
