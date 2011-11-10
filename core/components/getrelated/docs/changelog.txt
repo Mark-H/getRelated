@@ -1,3 +1,9 @@
+++++++++++++++++++++++++++++++++++++
+++                                ++
+++    getRelated 1.0.2-pl         ++
+++         Released: 10/11/2011   ++
+++                                ++
+++++++++++++++++++++++++++++++++++++
 Fix bug which didn't filter out the current resource properly by refactoring the query.
 Make sure the debug data being spit out is actually usable and not just one blurb of data.
 Make sure tags are checked in a case insensitive manner to improve dataset. Fixes lack of results on some configurations.
