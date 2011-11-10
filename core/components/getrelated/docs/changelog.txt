@@ -1,3 +1,4 @@
+Make sure the debug data being spit out is actually usable and not just one blurb of data.
 Make sure tags are checked in a case insensitive manner to improve dataset. Fixes lack of results on some configurations.
 Fix bug that ignores ignoreHidden and ignoreUnpublished setting
 

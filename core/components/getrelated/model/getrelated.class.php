@@ -245,7 +245,7 @@ class getRelated {
         
         if ($this->config['debug']) {
             $c->prepare();
-            echo $c->toSQL();
+            echo '<strong>Resource Query</strong>:<br />'.$c->toSQL();
         }
 
         $col = $this->modx->getCollection('modResource',$c);
@@ -319,7 +319,7 @@ class getRelated {
 
         if ($this->config['debug']) {
             $c->prepare();
-            echo $c->toSQL();
+            echo '<br/><strong>TV Query</strong>:<br />'.$c->toSQL();
         }
 
         $col = $this->modx->getCollection('modTemplateVarResource',$c);

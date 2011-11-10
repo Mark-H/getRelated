@@ -36,11 +36,11 @@ if (!($getRelated instanceof getRelated)) return $modx->lexicon('getrelated.erro
 $success = $getRelated->getRelated();
 
 if ($p['debug']) {
-    echo 'Config'; var_dump($getRelated->config);
-    echo 'Fields'; var_dump($getRelated->fields);
-    echo 'TVs'; var_dump($getRelated->tvs);
-    echo 'Match Data'; var_dump($getRelated->matchData);
-    echo 'All Related'; var_dump($getRelated->related);
+    echo '<br/><strong>Config:</strong>'; var_dump($getRelated->config);
+    echo '<br/><strong>Fields:</strong>'; var_dump($getRelated->fields);
+    echo '<br/><strong>TVs:</strong>'; var_dump($getRelated->tvs);
+    echo '<br/><strong>Match Data:</strong>'; var_dump($getRelated->matchData);
+    echo '<br/><strong>All Related Resources:</strong>'; var_dump($getRelated->related);
 }
 
 if ($success !== true) return $success;
