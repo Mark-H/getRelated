@@ -197,7 +197,7 @@ class getRelated {
         if (!$this->getMatchData()) { return $this->modx->lexicon('getrelated.error.invalidresource'); }
         if (count($this->matchData) < 1) { return $this->modx->lexicon('getrelated.error.nodistinctivedata'); }
 
-        $this->_getFieldRelated();
+        if (count($this->fields) > 0) { $this->_getFieldRelated(); }
         if (count($this->tvs) > 0) { $this->_getTVRelated(); }
         $this->_calculateRelatedRank();
 

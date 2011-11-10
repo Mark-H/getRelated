@@ -23,7 +23,7 @@ set_time_limit(0);
 define('PKG_NAME','getRelated');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
 define('PKG_VERSION','1.0.2');
-define('PKG_RELEASE','pl');
+define('PKG_RELEASE','pl2');
 
 $root = dirname(dirname(__FILE__)).'/';
 $sources = array (

@@ -1,9 +1,10 @@
 ++++++++++++++++++++++++++++++++++++
 ++                                ++
-++    getRelated 1.0.2-pl         ++
+++    getRelated 1.0.2-pl2        ++
 ++         Released: 10/11/2011   ++
 ++                                ++
 ++++++++++++++++++++++++++++++++++++
+(pl2) Fix bug which would include all resources if no resource fields are used in the &fields property.
 Fix bug which didn't filter out the current resource properly by refactoring the query.
 Make sure the debug data being spit out is actually usable and not just one blurb of data.
 Make sure tags are checked in a case insensitive manner to improve dataset. Fixes lack of results on some configurations.
