@@ -25,6 +25,7 @@ return array(
     'resource' => 'current',
     'fields' => 'pagetitle:3,introtext:2',
     'returnFields' => 'pagetitle,longtitle,introtext',
+    'returnTVs' => '',
 
     'parents' => '',
     'parentsDepth' => 10,

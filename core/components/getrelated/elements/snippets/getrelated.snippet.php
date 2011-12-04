@@ -49,23 +49,7 @@ if (count($getRelated->related) < 1) {
     return $getRelated->config['noResults'];
 }
 
-$output = array();
-$i = 0;
-foreach ($getRelated->related as $rank => $resArray) {
-    $phs = array_merge(array(
-        'idx' => $i,
-        'rank' => $rank,
-    ),$resArray);
-    $output[] = $getRelated->getChunk($p['tplRow'],$phs);
-    $i++;
-    if ($i == $p['limit']) break;
-}
-
-$phs = array(
-    'count' => count($output),
-    'wrapper' => implode($p['rowSeparator'],$output),
-);
-$output = $getRelated->getChunk($p['tplOuter'],$phs);
+$output = $getRelated->returnRelated();
 return $output;
 
 

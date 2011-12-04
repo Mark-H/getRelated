@@ -58,6 +58,12 @@ class getRelated {
         ),$config);
 
         $this->config['returnFields'] = explode(',',$this->config['returnFields']);
+        $returnTVs = explode(',',$this->config['returnTVs']);
+        $this->config['returnTVs'] = array();
+        foreach ($returnTVs as $tvname) {
+            $tv = $this->modx->getParser()->getElement('modTemplateVar', $tvname);
+            if ($tv instanceof modTemplateVar) $this->config['returnTVs'][$tvname] = $tv;
+        }
         $this->config['parents'] = !empty($this->config['parents']) ? explode(',',$this->config['parents']) : array();
         $this->config['contexts'] = !empty($this->config['contexts']) ? explode(',',$this->config['contexts']) : array($this->modx->context->get('key'));
         if (count($this->config['parents']) > 0) {
@@ -359,6 +365,35 @@ class getRelated {
         return true;
     }
 
+    /**
+     * Returns the results, templated, with returnTVs. Uses the limit config option.
+     *
+     * @return array|string
+     */
+    public function returnRelated() {
+        $output = array();
+        $i = 0;
+        foreach ($this->related as $rank => $resArray) {
+            $phs = array_merge(array(
+                'idx' => $i,
+                'rank' => $rank,
+            ),$resArray);
+            foreach ($this->config['returnTVs'] as $key => $tv) {
+                $phs[$key] = $tv->renderOutput($resArray['id']);
+            }
+            $output[] = $this->getChunk($this->config['tplRow'],$phs);
+            $i++;
+            if ($i == $this->config['limit']) break;
+        }
+        
+        $phs = array(
+            'count' => count($output),
+            'wrapper' => implode($this->config['rowSeparator'],$output),
+        );
+        $output = $this->getChunk($this->config['tplOuter'],$phs);
+        return $output;
+    }
+    
     /**
      * Simple custom sort function to sort on rank first, and when equal on ID (assuming the highest ID is the most recent resource).
      * @param $a

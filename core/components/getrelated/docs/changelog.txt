@@ -1,3 +1,5 @@
+Add new returnTVs property to include TV values in the snippet output. 
+
 ++++++++++++++++++++++++++++++++++++
 ++                                ++
 ++    getRelated 1.0.2-pl2        ++
