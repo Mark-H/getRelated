@@ -1,3 +1,9 @@
+++++++++++++++++++++++++++++++++++++
+++                                ++
+++    getRelated 1.1.0-pl         ++
+++         Released: 04/12/2011   ++
+++                                ++
+++++++++++++++++++++++++++++++++++++
 Add new exclude property to exclude specific resources from the output.
 Add new returnTVs property to include TV values in the snippet output. 
 
