@@ -13,8 +13,10 @@ $_lang['getrelated.stopwords'] = "a,able,about,above,abroad,according,accordingl
 
 $_lang['getrelated.prop_desc.resource'] = 'Either the Resource ID to find related resources for or "current" or empty to find related for the current resource.';
 $_lang['getrelated.prop_desc.fields'] = 'Comma separated list of fieldname:weight to use in the comparison. Prefix TVs with "tv.". Don\'t use the content unless you want to kill performance. Example of use: pagetitle:3,tv.MyTags:7,tv.MySubjects:15,introtext:2';
-$_lang['getrelated.prop_desc.returnFields'] = 'Resource Fields (no TVs as of yet) to include in the eventual output.';
+$_lang['getrelated.prop_desc.returnFields'] = 'Resource Fields (use returnTVs for template variables) to include in the eventual output.';
+$_lang['getrelated.prop_desc.returnTVs'] = 'Template Variables names (comma separated) to include in the result set. Do not prefix with "tv.".';
 $_lang['getrelated.prop_desc.parents'] = 'Comma separated list of parents to use in finding related resources.';
+$_lang['getrelated.prop_desc.exclude'] = 'Comma separated list of resource IDs to exclude from the results.';
 $_lang['getrelated.prop_desc.parentsDepth'] = 'The depth to search parents for.';
 $_lang['getrelated.prop_desc.contexts'] = 'Comma separated list of Contexts to search in.';
 $_lang['getrelated.prop_desc.includeUnpublished'] = 'Also use unpublished resources in the result set.';

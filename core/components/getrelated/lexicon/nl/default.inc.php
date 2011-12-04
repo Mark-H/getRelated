@@ -12,8 +12,10 @@ $_lang['getrelated.stopwords'] = "aan,afd,dat,de,den,der,des,deze,die,dit,dl,doo
 
 $_lang['getrelated.prop_desc.resource'] = 'Een resource ID om als basis te gebruiken voor de vergelijking, of "current" of leeg om voor het huidige document te zoeken.';
 $_lang['getrelated.prop_desc.fields'] = 'Komma gescheiden lijst van velden om te gebruiken in de verlijking, syntax is veldnaam:gewicht. TVs kan je gebruiken door deze vooraf te laten gaan met "tv.". Gebruik niet het inhoudsveld tenzij je je performance niet belangrijk vind. Voorbeeld: pagetitle:3,tv.MyTags:7,tv.MySubjects:15,introtext:2';
-$_lang['getrelated.prop_desc.returnFields'] = 'Document Velden (nog geen TVs) welke je kan gebruiken in de output chunks.';
+$_lang['getrelated.prop_desc.returnFields'] = 'Document Velden (gebruik returnTVs voor template variabelen) welke je kan gebruiken in de output chunks.';
+$_lang['getrelated.prop_desc.returnTVs'] = 'Komma gescheiden lijst van template variabelen namen om in de resultaten te gebruiken. Geen "tv." voor zetten.';
 $_lang['getrelated.prop_desc.parents'] = 'Komma gescheiden lijst van bovenliggende documenten om in te zoeken.';
+$_lang['getrelated.prop_desc.exclude'] = 'Komma gescheiden lijst van document IDs die je buiten de resultaten wilt houden.';
 $_lang['getrelated.prop_desc.parentsDepth'] = 'De diepte om bovenliggende documenten te zoeken.';
 $_lang['getrelated.prop_desc.contexts'] = 'Komma gescheiden lijst van contexts on in te zoeken.';
 $_lang['getrelated.prop_desc.includeUnpublished'] = 'Gebruik ook niet gepubliceerde documenten in de resultaten?';
