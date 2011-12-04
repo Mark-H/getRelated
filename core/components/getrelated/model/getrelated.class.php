@@ -171,7 +171,7 @@ class getRelated {
 
         /* Fetch resource data */
         $resValues = $this->resource->get($this->fields);
-        $resValues = implode(' ',$resValues);
+        $resValues = (is_array($resValues)) ? implode(' ',$resValues) : $resValues;
         $resValues = explode(' ',trim($resValues));
 
         /* Combine the data and filter out duplicates, non-alphanum and stop words. */
