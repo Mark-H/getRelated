@@ -32,6 +32,7 @@ return array(
     'contexts' => '',
     'includeUnpublished' => false,
     'includeHidden' => true,
+    'exclude' => '',
 
     'limit' => 3,
 

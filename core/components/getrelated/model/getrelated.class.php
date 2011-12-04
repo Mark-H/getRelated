@@ -74,6 +74,7 @@ class getRelated {
             }
         }
         if (isset($a) && count($a) > 0) $this->config['parents'] = $a;
+        $this->config['exclude'] = explode(',',$this->config['exclude']);
 
         $fields = explode(',',$this->config['fields']);
         foreach ($fields as $fld) {
@@ -236,6 +237,8 @@ class getRelated {
                 'context_key:IN' => $this->config['contexts'],
             )
         );
+        if (!empty($this->config['exclude']))
+            $c->andCondition(array('modResource.id:NOT IN' => $this->config['exclude']));
         if (!empty($this->config['parents']))
             $c->andCondition(array('parent:IN' => $this->config['parents']));
 
@@ -285,6 +288,7 @@ class getRelated {
         $conditions['contentid:!='] = $this->resource->get('id');
         $conditions['Resource.context_key:IN'] = $this->config['contexts'];
 
+        if (!empty($this->config['exclude'])) $conditions['Resource.id:NOT IN'] = $this->config['exclude'];
         if (!empty($this->config['parents'])) $conditions['Resource.parent:IN'] = $this->config['parents'];
         if (!$this->config['includeUnpublished']) $conditions['Resource.published'] = 1;
         if (!$this->config['includeHidden']) $conditions['Resource.hidemenu'] = 0;
@@ -379,6 +383,7 @@ class getRelated {
                 'rank' => $rank,
             ),$resArray);
             foreach ($this->config['returnTVs'] as $key => $tv) {
+                /* @var modTemplateVar $tv */
                 $phs[$key] = $tv->renderOutput($resArray['id']);
             }
             $output[] = $this->getChunk($this->config['tplRow'],$phs);
