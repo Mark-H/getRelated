@@ -1,3 +1,9 @@
+++++++++++++++++++++++++++++++++++++
+++                                ++
+++    getRelated 1.1.1-pl         ++
+++         Released: 10/12/2011   ++
+++                                ++
+++++++++++++++++++++++++++++++++++++
 Fix issue with &parents which wouldn't find direct descendants.
 Prevent error messages (and possible failure) if only one resource field is chosen.
 
