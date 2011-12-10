@@ -67,7 +67,7 @@ class getRelated {
         $this->config['parents'] = !empty($this->config['parents']) ? explode(',',$this->config['parents']) : array();
         $this->config['contexts'] = !empty($this->config['contexts']) ? explode(',',$this->config['contexts']) : array($this->modx->context->get('key'));
         if (count($this->config['parents']) > 0) {
-            $a = array();
+            $a = $this->config['parents'];
             foreach ($this->config['parents'] as $prnt) {
                 foreach ($this->config['contexts'] as $ctx)
                 $a = array_merge($a,$this->modx->getChildIds($prnt, $this->config['parentsDepth'],array('context' => $ctx)));
