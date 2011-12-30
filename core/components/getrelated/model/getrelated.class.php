@@ -348,7 +348,7 @@ class getRelated {
             foreach (array_merge($this->fields,$this->tvs) as $fld) {
                 foreach ($this->matchData as $match) {
                     /* Calculate a rank and add it to the total resource rank */
-                    if ((strlen($array[$fld]) > 0) && !empty($match)) {
+                    if (isset($array[$fld]) && (strlen($array[$fld]) > 0) && !empty($match)) {
                         $count = substr_count(strtolower($array[$fld]),$match);
                         if ($count > 0) $rank += $count * $this->weight[$fld];
                     }
