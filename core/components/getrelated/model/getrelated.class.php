@@ -244,6 +244,7 @@ class getRelated {
 
         if (!$this->config['includeUnpublished']) $c->where(array('modResource.published' => true));
         if (!$this->config['includeHidden']) $c->where(array('modResource.hidemenu' => false));
+        if ($this->config['hideContainers']) $c->where(array('modResource.isfolder' => false));
 
         $c->sortby($this->config['fieldSort'],$this->config['fieldSortDir']);
         $c->limit($this->config['fieldSample']);
@@ -290,8 +291,9 @@ class getRelated {
 
         if (!empty($this->config['exclude'])) $conditions['Resource.id:NOT IN'] = $this->config['exclude'];
         if (!empty($this->config['parents'])) $conditions['Resource.parent:IN'] = $this->config['parents'];
-        if (!$this->config['includeUnpublished']) $conditions['Resource.published'] = 1;
-        if (!$this->config['includeHidden']) $conditions['Resource.hidemenu'] = 0;
+        if (!$this->config['includeUnpublished']) $conditions['Resource.published'] = true;
+        if (!$this->config['includeHidden']) $conditions['Resource.hidemenu'] = false;
+        if ($this->config['hideContainers']) $conditions['Resource.isfolder'] = false;
 
         /* Get the TV names to search in */
         $useTVs = array();

@@ -33,6 +33,7 @@ return array(
     'includeUnpublished' => false,
     'includeHidden' => true,
     'exclude' => '',
+    'hideContainers' => false,
 
     'limit' => 3,
 
