@@ -1,3 +1,10 @@
+++++++++++++++++++++++++++++++++++++
+++                                ++
+++    getRelated 1.1.2-pl         ++
+++         Released: 21/01/2012   ++
+++                                ++
+++++++++++++++++++++++++++++++++++++
+Fix including deleted resources by adding &includeDeleted property defaulting to false.
 Add &hideContainers property to allow filtering out of containers.
 Prevent E_NOTICE errors on calculating the scores.
 

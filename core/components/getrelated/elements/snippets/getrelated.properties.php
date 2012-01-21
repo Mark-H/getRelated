@@ -30,6 +30,7 @@ return array(
     'parents' => '',
     'parentsDepth' => 10,
     'contexts' => '',
+    'includeDeleted' => false,
     'includeUnpublished' => false,
     'includeHidden' => true,
     'exclude' => '',

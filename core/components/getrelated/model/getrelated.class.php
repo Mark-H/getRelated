@@ -242,6 +242,7 @@ class getRelated {
         if (!empty($this->config['parents']))
             $c->andCondition(array('parent:IN' => $this->config['parents']));
 
+        if (!$this->config['includeDeleted']) $c->where(array('modResource.deleted' => false));
         if (!$this->config['includeUnpublished']) $c->where(array('modResource.published' => true));
         if (!$this->config['includeHidden']) $c->where(array('modResource.hidemenu' => false));
         if ($this->config['hideContainers']) $c->where(array('modResource.isfolder' => false));
@@ -291,6 +292,7 @@ class getRelated {
 
         if (!empty($this->config['exclude'])) $conditions['Resource.id:NOT IN'] = $this->config['exclude'];
         if (!empty($this->config['parents'])) $conditions['Resource.parent:IN'] = $this->config['parents'];
+        if (!$this->config['includeDeleted']) $conditions['Resource.deleted'] = false;
         if (!$this->config['includeUnpublished']) $conditions['Resource.published'] = true;
         if (!$this->config['includeHidden']) $conditions['Resource.hidemenu'] = false;
         if ($this->config['hideContainers']) $conditions['Resource.isfolder'] = false;
