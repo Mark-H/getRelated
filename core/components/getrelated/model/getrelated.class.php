@@ -178,7 +178,7 @@ class getRelated {
         $values = array_merge($values,$resValues);
         $filteredValues = array();
         foreach ($values as $v) {
-            $v = preg_replace('/[^a-z0-9\s]/', '', strtolower($v));
+            $v = preg_replace('/[^А-Яа-яЁёa-z0-9\s]/', '', strtolower($v));
             if (!in_array(strtolower($v),$this->stopwords) &&
                 !in_array(strtolower($v),$filteredValues) &&
                 !empty($v) &&
