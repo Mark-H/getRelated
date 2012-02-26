@@ -20,12 +20,22 @@ $tstart = $mtime;
 set_time_limit(0);
 
 /* define package */
-define('PKG_NAME','getRelated');
-define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','1.1.2');
-define('PKG_RELEASE','pl');
+if (defined('PX')) {
+    define('PKG_NAME',PX_NAME);
+    define('PKG_NAME_LOWER',strtolower(PKG_NAME));
+    define('PKG_VERSION',PX_VERSION);
+    define('PKG_RELEASE',PX_RELEASE);
+    $root = PX_REPOROOT;
+    require_once PX_MODXROOT . 'config.core.php';
+} else {
+    define('PKG_NAME','getRelated');
+    define('PKG_NAME_LOWER',strtolower(PKG_NAME));
+    define('PKG_VERSION','1.1.2');
+    define('PKG_RELEASE','pl');
+    $root = dirname(dirname(__FILE__)).'/';
+    require_once $root . 'config.core.php';
+}
 
-$root = dirname(dirname(__FILE__)).'/';
 $sources = array (
     'root' => $root,
     'build' => $root .'_build/',
@@ -39,17 +49,20 @@ $sources = array (
 );
 unset($root);
 
-require_once $sources['root'] . 'config.core.php';
 require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
 
-$modx= new modX();
+$modx = new modX();
 $modx->initialize('mgr');
 $modx->setLogLevel(modX::LOG_LEVEL_INFO);
 $modx->setLogTarget('ECHO'); echo 'Packing '.PKG_NAME_LOWER.'-'.PKG_VERSION.'-'.PKG_RELEASE.'<pre>'; flush();
 
 $modx->loadClass('transport.modPackageBuilder','',false, true);
 $builder = new modPackageBuilder($modx);
-$builder->directory = dirname(dirname(__FILE__)).'/_packages/';
+if (defined('PX_TARGETDIRECTORY')) {
+    $builder->directory = PX_TARGETDIRECTORY;
+} else {
+    $builder->directory = dirname(dirname(__FILE__)).'/_packages/';
+}
 $builder->createPackage(PKG_NAME_LOWER,PKG_VERSION,PKG_RELEASE);
 $builder->registerNamespace(PKG_NAME_LOWER,false,true,'{core_path}components/'.PKG_NAME_LOWER.'/');
 $modx->getService('lexicon','modLexicon');
@@ -57,6 +70,7 @@ $modx->getService('lexicon','modLexicon');
 
 
 /* create category */
+/* @var modCategory $category */
 $category= $modx->newObject('modCategory');
 $category->set('id',1);
 $category->set('category',PKG_NAME);
