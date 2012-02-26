@@ -26,7 +26,7 @@ if (defined('PX')) {
     define('PKG_VERSION',PX_VERSION);
     define('PKG_RELEASE',PX_RELEASE);
     $root = PX_REPOROOT;
-    require_once PX_MODX_CORE_PATH . 'model/modx/modx.class.php';
+    /* No need to require modX, we've got that covered. */
 } else {
     define('PKG_NAME','getRelated');
     define('PKG_NAME_LOWER',strtolower(PKG_NAME));
@@ -49,8 +49,6 @@ $sources = array (
     'model' => $root.'core/components/'.PKG_NAME_LOWER.'/model/',
 );
 unset($root);
-
-require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
 
 $modx = new modX();
 $modx->initialize('mgr');
