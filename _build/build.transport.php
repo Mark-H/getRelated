@@ -107,9 +107,9 @@ $builder->putVehicle($vehicle);
 
 /* now pack in the license file, readme and setup options */
 $builder->setPackageAttributes(array(
-    'license' => file_get_contents($sources['docs'] . 'license.txt'),
-    'readme' => file_get_contents($sources['docs'] . 'readme.txt'),
-    'changelog' => file_get_contents($sources['docs'] . 'changelog.txt'),
+    'license' => (defined('PX_LICENSE')) ? PX_LICENSE : file_get_contents($sources['docs'] . 'license.txt'),
+    'readme' =>(defined('PX_SUMMARY')) ? PX_SUMMARY : file_get_contents($sources['docs'] . 'readme.txt'),
+    'changelog' => (defined('PX_CHANGELOG')) ? PX_CHANGELOG : file_get_contents($sources['docs'] . 'changelog.txt'),
 ));
 $modx->log(modX::LOG_LEVEL_INFO,'Packaged in package attributes.'); flush();
 
