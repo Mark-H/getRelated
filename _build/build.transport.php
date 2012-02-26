@@ -26,7 +26,7 @@ if (defined('PX')) {
     define('PKG_VERSION',PX_VERSION);
     define('PKG_RELEASE',PX_RELEASE);
     $root = PX_REPOROOT;
-    require_once PX_MODXROOT . 'config.core.php';
+    require_once PX_MODX_CORE_PATH . 'model/modx/modx.class.php';
 } else {
     define('PKG_NAME','getRelated');
     define('PKG_NAME_LOWER',strtolower(PKG_NAME));
@@ -34,6 +34,7 @@ if (defined('PX')) {
     define('PKG_RELEASE','pl');
     $root = dirname(dirname(__FILE__)).'/';
     require_once $root . 'config.core.php';
+    require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
 }
 
 $sources = array (
