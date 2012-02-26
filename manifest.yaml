@@ -1,8 +1,12 @@
 name: getRelated,
-introduction: >
+summary: >
   getRelated is a snippet for MODX Revolution that automatically finds related pages based on fields you specify. \n
   It takes in a number of properties to define an algorithm, and based on the current resource it finds any
   related resources for it.
+changelog: >
+  Fix including deleted resources by adding &includeDeleted property defaulting to false.
+  Add &hideContainers property to allow filtering out of containers.
+  Prevent E_NOTICE errors on calculating the scores.
 version:            # Defining the version which will be used
   major: 1
   minor: 1
@@ -10,5 +14,5 @@ version:            # Defining the version which will be used
   release: pl
   releasenr: null
 supports:           # What versions of MODX are supported
-  minimum: 2.0.0-pl
+  from: 2.0.0-pl
   until: null       # Non-inclusive, so if 2.0.8 is supported, but 2.1.0 is not this could be set to 2.1.0.
