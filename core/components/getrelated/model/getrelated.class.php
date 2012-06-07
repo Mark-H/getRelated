@@ -56,6 +56,17 @@ class getRelated {
             'model_path' => $basePath.'model/',
             'elements_path' => $basePath.'elements/',
         ),$config);
+    }
+
+    /**
+     * Sets and processes the properties into the config array.
+     * Also clears the $this->related array to facilitate using snippet multiple times on one page.
+     *
+     * @param array $properties
+     */
+    public function setProperties(array $properties = array()) {
+        $this->config = array_merge($this->config, $properties);
+        $this->related = array();
 
         $this->config['returnFields'] = explode(',',$this->config['returnFields']);
         $returnTVs = explode(',',$this->config['returnTVs']);
@@ -64,6 +75,7 @@ class getRelated {
             $tv = $this->modx->getParser()->getElement('modTemplateVar', $tvname);
             if ($tv instanceof modTemplateVar) $this->config['returnTVs'][$tvname] = $tv;
         }
+
         $this->config['parents'] = !empty($this->config['parents']) ? explode(',',$this->config['parents']) : array();
         $this->config['contexts'] = !empty($this->config['contexts']) ? explode(',',$this->config['contexts']) : array($this->modx->context->get('key'));
         if (count($this->config['parents']) > 0) {
@@ -74,7 +86,8 @@ class getRelated {
             }
         }
         if (isset($a) && count($a) > 0) $this->config['parents'] = $a;
-        $this->config['exclude'] = explode(',',$this->config['exclude']);
+
+        $this->config['exclude'] = (!empty($this->config['exclude'])) ? explode(',',$this->config['exclude']) : array();
 
         $fields = explode(',',$this->config['fields']);
         foreach ($fields as $fld) {
@@ -416,4 +429,3 @@ class getRelated {
     }
 }
 
-?>

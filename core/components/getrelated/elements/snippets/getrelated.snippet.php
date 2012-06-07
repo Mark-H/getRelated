@@ -29,7 +29,8 @@ $path = $modx->getOption('getrelated.core_path',null,$modx->getOption('core_path
 $p = include $path.'elements/snippets/getrelated.properties.php';
 $p = array_merge($p,$scriptProperties);
 
-$getRelated = $modx->getService('getrelated','getRelated',$path.'model/',$p);
+$getRelated = $modx->getService('getrelated','getRelated',$path.'model/');
+$getRelated->setProperties($p);
 if (!($getRelated instanceof getRelated)) return $modx->lexicon('getrelated.errorloadingclass',array('path' => $path.'model/'));
 
 /* Get the possibly related resources based on the $matchData found. */
@@ -53,4 +54,4 @@ $output = $getRelated->returnRelated();
 return $output;
 
 
-?>
+

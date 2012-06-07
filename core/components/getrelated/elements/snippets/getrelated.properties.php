@@ -55,4 +55,3 @@ return array(
     'defaultWeight' => 5,
     'debug' => false
 );
-?>
