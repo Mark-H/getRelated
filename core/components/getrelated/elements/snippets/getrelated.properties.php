@@ -35,6 +35,7 @@ return array(
     'includeHidden' => true,
     'exclude' => '',
     'hideContainers' => false,
+    'stopwords' => '',
 
     'limit' => 3,
 

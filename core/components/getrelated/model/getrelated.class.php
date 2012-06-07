@@ -47,8 +47,6 @@ class getRelated {
         $this->modx =& $modx;
         $this->modx->lexicon->load('getrelated:default');
 
-        $this->stopwords = explode(',',$this->modx->lexicon('getrelated.stopwords'));
-
         $basePath = $this->modx->getOption('getrelated.core_path',$config,$this->modx->getOption('core_path').'components/getrelated/');
         $this->config = array_merge(array(
             'base_bath' => $basePath,
@@ -67,6 +65,16 @@ class getRelated {
     public function setProperties(array $properties = array()) {
         $this->config = array_merge($this->config, $properties);
         $this->related = array();
+
+        /* Handle stopwords */
+        $this->stopwords = explode(',',$this->modx->lexicon('getrelated.stopwords'));
+        if (!empty($this->config['stopwords'])) {
+            $stopwords = explode(',',$this->config['stopwords']);
+            foreach ($stopwords as $sw) {
+                $sw = preg_replace('/[^А-Яа-яЁёa-z0-9\s]/', '', strtolower($sw));
+                if (!empty($sw)) $this->stopwords[] = $sw;
+            }
+        }
 
         $this->config['returnFields'] = explode(',',$this->config['returnFields']);
         $returnTVs = explode(',',$this->config['returnTVs']);
