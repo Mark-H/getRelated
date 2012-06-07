@@ -4,38 +4,30 @@ Get rid of the rank (amt of points) in the default tplRow chunk.
 Add support for Russian. Thanks createit!
 
 ++++++++++++++++++++++++++++++++++++
-++                                ++
 ++    getRelated 1.1.2-pl         ++
-++         Released: 21/01/2012   ++
-++                                ++
+++         Released: 2012-01-21   ++
 ++++++++++++++++++++++++++++++++++++
 Fix including deleted resources by adding &includeDeleted property defaulting to false.
 Add &hideContainers property to allow filtering out of containers.
 Prevent E_NOTICE errors on calculating the scores.
 
 ++++++++++++++++++++++++++++++++++++
-++                                ++
 ++    getRelated 1.1.1-pl         ++
-++         Released: 10/12/2011   ++
-++                                ++
+++         Released: 2011-12-10   ++
 ++++++++++++++++++++++++++++++++++++
 Fix issue with &parents which wouldn't find direct descendants.
 Prevent error messages (and possible failure) if only one resource field is chosen.
 
 ++++++++++++++++++++++++++++++++++++
-++                                ++
 ++    getRelated 1.1.0-pl         ++
-++         Released: 04/12/2011   ++
-++                                ++
+++         Released: 2011-12-04   ++
 ++++++++++++++++++++++++++++++++++++
 Add new exclude property to exclude specific resources from the output.
 Add new returnTVs property to include TV values in the snippet output. 
 
 ++++++++++++++++++++++++++++++++++++
-++                                ++
 ++    getRelated 1.0.2-pl2        ++
-++         Released: 10/11/2011   ++
-++                                ++
+++         Released: 2011-11-10   ++
 ++++++++++++++++++++++++++++++++++++
 (pl2) Fix bug which would include all resources if no resource fields are used in the &fields property.
 Fix bug which didn't filter out the current resource properly by refactoring the query.
@@ -44,20 +36,16 @@ Make sure tags are checked in a case insensitive manner to improve dataset. Fixe
 Fix bug that ignores ignoreHidden and ignoreUnpublished setting
 
 ++++++++++++++++++++++++++++++++++++
-++                                ++
 ++    getRelated 1.0.1-pl2        ++
-++         Released: 27/10/2011   ++
-++                                ++
+++         Released: 2011-10-27   ++
 ++++++++++++++++++++++++++++++++++++
 Fix bug where tpl files are chosen over actual chunks.
 Fix bug with &parents and TVs in the &fields property.
 Add custom sort function to class for cleanliness
 
 ++++++++++++++++++++++++++++++++++++
-++                                ++
 ++    getRelated 1.0.0-pl         ++
-++         Released: 13/10/2011   ++
-++                                ++
+++         Released: 2011-10-13   ++
 ++++++++++++++++++++++++++++++++++++
 
 Fix bug on some configurations with the callback function being inline.
@@ -65,10 +53,8 @@ Add anchor tags to the default chunk.
 Disable debug mode being enabled by default.
 
 ++++++++++++++++++++++++++++++++++++
-++                                ++
 ++    getRelated 0.9.1-dev        ++
-++         Released: 9/10/2011   ++
-++                                ++
+++         Released: 2011-10-09   ++
 ++++++++++++++++++++++++++++++++++++
 
 (Private Release)
