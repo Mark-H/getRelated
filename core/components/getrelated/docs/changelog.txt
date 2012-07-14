@@ -2,7 +2,7 @@
 ++    getRelated 1.2.0-pl         ++
 ++         Released: 2012-06-07   ++
 ++++++++++++++++++++++++++++++++++++
-#4 Add &stopwords property to exlude stopwords on a snippet-call basis.
+#4 Add &stopwords property to exclude stopwords on a snippet-call basis.
 #6 Now properly supports multiple snippet calls per page.
 Get rid of the rank (amt of points) in the default tplRow chunk.
 Add support for Russian. Thanks createit!
